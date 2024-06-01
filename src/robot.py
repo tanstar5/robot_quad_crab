@@ -5,6 +5,8 @@ from colorama import Fore,Back
 from adafruit_servokit import ServoKit
 from servo_motor import ServoMotor
 from group_servos import GroupServos
+from robot_wifi import RobotServer
+
 #from robot_leg import RobotLeg
 
 class Robot(object):
@@ -12,6 +14,7 @@ class Robot(object):
         self.__servo_motor_list = servo_motor_list
         self.__rest_servo_pos = rest_servo_pos
         self.__servo_pos = np.nan*np.ones(rest_servo_pos.shape)
+        self.__server = RobotServer()
 
     def return_servo_list(self,grp:GroupServos):
         servo_motor_list = np.array([self.__servo_motor_list[servo_index[0]][servo_index[1]] for servo_index in grp.servo_index_mat])
@@ -81,6 +84,7 @@ class Robot(object):
             displacement_mag = np.linalg.norm(displacement)
             #print(f'DEBUG: displacement is {int((tot_displacement_mag-displacement_mag)/tot_displacement_mag*100)}')
             pbar.update(int((tot_displacement_mag-displacement_mag)/tot_displacement_mag*100))
+            self.__server.listen_from_client(client_address='192.168.0.160',servo_limits=self.return_servo_limits(),servo_pos=self.__servo_pos)
         pbar.close()
         print(Fore.RESET+'MESSAGE: Reached to target')    
 
