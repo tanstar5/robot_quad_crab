@@ -53,10 +53,27 @@ class RobotServer():
         
 
 class RobotClient():
-    def __init__(self,server_address:str='192.168.0.114'):
-        self.__server_address = server_address
-        pass
-    pass
+    def __init__(self,client_address:str='192.168.0.160'):
+        self.__client_address = client_address
+        self.__client_port = 2221
+        self.__buffer_size = 1024
+        self.__client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.__client_socket.bind((self.__client_address,self.__client_port))
+        self.__client_socket.setblocking(False)        
+        self.__robot_params = RobotParams(servo_limits=None,servo_pos=None)
+        
+    def read_from_server(self,comm:RobotComms,server_address:tuple=('192.168.0.114',2222)):
+        packet = comm.create_comm_packet(command=0)
+        self.__client_socket.sendto(packet,server_address)
+        time.sleep(.5)
+        #packet_recv,address = self.__client_socket.recvfrom(self.__buffer_size)           
+        #self.__robot_params.read_data_packet(packet=packet_recv)
+        try:
+           packet_recv,address = self.__client_socket.recvfrom(self.__buffer_size)           
+           self.__robot_params.read_data_packet(packet=packet_recv)
+           print(f'DEBUG: got  {self.__robot_params.__dict__} from server')
+        except BlockingIOError:
+           print(f'WARNING: server didnt respond {server_address} and robot_servo_pos is {self.__robot_params.servo_pos}')
 
 if __name__ == '__main__':
     # servo_motor_00 = ServoMotor(ID=0,address=[ServoKit(channels=16,address=0x40),0],rest_position=95,limits=[40,150]) 
