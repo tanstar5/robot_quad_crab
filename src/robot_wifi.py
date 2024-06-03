@@ -11,6 +11,7 @@ from servo_motor import ServoMotor
 from group_servos import GroupServos
 from inverse_kinematics import InverseKinematics
 from robot_params import RobotParams
+from robot_commands import RobotComms
 
 class RobotServer():
     def __init__(self,server_ip:str='192.168.0.114'):
@@ -76,44 +77,4 @@ class RobotClient():
            print(f'WARNING: server didnt respond {server_address} and robot_servo_pos is {self.__robot_params.servo_pos}')
 
 if __name__ == '__main__':
-    # servo_motor_00 = ServoMotor(ID=0,address=[ServoKit(channels=16,address=0x40),0],rest_position=95,limits=[40,150]) 
-    # servo_motor_01 = ServoMotor(ID=1,address=[ServoKit(channels=16,address=0x40),1],rest_position=95,limits=[10,180])    
-    # servo_motor_02 = ServoMotor(ID=2,address=[ServoKit(channels=16,address=0x40),2],rest_position=30,limits=[30,150])
-    # servo_motor_10 = ServoMotor(ID=10,address=[ServoKit(channels=16,address=0x40),0+4],rest_position=75,limits=[20,130]) 
-    # servo_motor_11 = ServoMotor(ID=11,address=[ServoKit(channels=16,address=0x40),1+4],rest_position=95,limits=[10,180])    
-    # servo_motor_12 = ServoMotor(ID=12,address=[ServoKit(channels=16,address=0x40),2+4],rest_position=150,limits=[30,150])
-    # servo_motor_20 = ServoMotor(ID=20,address=[ServoKit(channels=16,address=0x42),0],rest_position=75,limits=[20,130]) 
-    # servo_motor_21 = ServoMotor(ID=21,address=[ServoKit(channels=16,address=0x42),1],rest_position=95,limits=[10,180])    
-    # servo_motor_22 = ServoMotor(ID=22,address=[ServoKit(channels=16,address=0x42),2],rest_position=170,limits=[50,170])
-    # servo_motor_30 = ServoMotor(ID=30,address=[ServoKit(channels=16,address=0x42),0+4],rest_position=115,limits=[60,170]) 
-    # servo_motor_31 = ServoMotor(ID=31,address=[ServoKit(channels=16,address=0x42),1+4],rest_position=95,limits=[10,180])    
-    # servo_motor_32 = ServoMotor(ID=32,address=[ServoKit(channels=16,address=0x42),2+4],rest_position=30,limits=[30,150])
-
-    # servo_motor_list = np.array([ [servo_motor_00,servo_motor_01,servo_motor_02],
-    #                              [servo_motor_10,servo_motor_11,servo_motor_12],
-    #                               [servo_motor_20,servo_motor_21,servo_motor_22],
-    #                                [servo_motor_30,servo_motor_31,servo_motor_32] ] )
-    
-    # rest_servo_pos = np.array([[0.5,0.5,0],
-    #                            [.5,.5,1],
-    #                             [.5,.5,1],
-    #                              [.5,0.5,0]] )
-    
-    # robot_obj = Robot(servo_motor_list=servo_motor_list,rest_servo_pos=rest_servo_pos)
-    # time.sleep(5)
-    # robot_obj.arm()
-    # robot_server = RobotServer(robot=robot_obj)
-    # while(True):
-    #     robot_server.listen_from_client(client_address='192.168.0.160')
-
-
-
     pass
-        
-
-    
-
-
-    
-
-    

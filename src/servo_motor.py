@@ -52,15 +52,16 @@ class ServoMotor():
     def goto_norm_pos(self,norm_pos:float=0.5):
         min_pos = self.__limits[0]
         max_pos = self.__limits[1]
-        norm_pos_correct = lambda norm_pos: 0 if norm_pos<=0 else norm_pos if norm_pos<=1 else 1 
+        norm_pos_correct = lambda norm_pos: 0 if norm_pos<0 else norm_pos if norm_pos<1 else 1 
         
 
         if norm_pos<=1 and norm_pos>=0:
             pos_to_go = min_pos + (max_pos-min_pos)*norm_pos
             self.goto(position=pos_to_go)
         else:
-            print(Back.RED+'ERROR:' + Back.RESET + f'norm_pos {norm_pos} not in range [0,1]')
+            print(f'WARNING: norm_pos {norm_pos} not in range [0,1]')
             norm_pos = norm_pos_correct(norm_pos=norm_pos)
+            print(f'WARNING: norm_pos corrected to {norm_pos} not in range [0,1]')
             pos_to_go = min_pos + (max_pos-min_pos)*norm_pos
             self.goto(position=pos_to_go)
             #raise ValueError

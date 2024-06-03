@@ -7,6 +7,7 @@ from servo_motor import ServoMotor
 from group_servos import GroupServos
 from robot_wifi import RobotServer
 
+
 #from robot_leg import RobotLeg
 
 class Robot(object):
@@ -67,7 +68,7 @@ class Robot(object):
         ds = np.sign(displacement)*step_p_ms
         max_diff = max(abs(x-x0) for x,x0 in zip(position.flatten(),np.array(self.__servo_pos).flatten())) 
         tot_displacement_mag = np.linalg.norm(displacement) 
-        pbar = tqdm(total=100,desc=Fore.GREEN+'Progress:')      
+        #pbar = tqdm(total=100,desc=Fore.GREEN+'Progress:')      
         while(max_diff>step_p_ms*1.5):
             #current_pos = np.array(self.__servo_pos)
             #print(f'DEBUG: current_pos = {current_pos}')
@@ -83,9 +84,9 @@ class Robot(object):
             max_diff = max(abs(x-x0) for x,x0 in zip(position.flatten(),np.array(current_pos).flatten()))
             displacement_mag = np.linalg.norm(displacement)
             #print(f'DEBUG: displacement is {int((tot_displacement_mag-displacement_mag)/tot_displacement_mag*100)}')
-            pbar.update(int((tot_displacement_mag-displacement_mag)/tot_displacement_mag*100))
+            #pbar.update(int((tot_displacement_mag-displacement_mag)/tot_displacement_mag*100))
             self.__server.listen_from_client(client_address='192.168.0.160',servo_limits=self.return_servo_limits(),servo_pos=self.__servo_pos)
-        pbar.close()
+        #pbar.close()
         print(Fore.RESET+'MESSAGE: Reached to target')    
 
     def stand(self):
@@ -170,28 +171,56 @@ if __name__ == '__main__':
     time.sleep(5)
     robot_obj.arm()
 
-    step_p_sec=15
+    step_p_sec=5
     # servo_grp = GroupServos(servo_index_mat=[[0,0],[0,1],[0,2],[3,0],[3,1],[3,2]],relation=[1,-1,-1,1,-1,-1],phase=[0,0,0,0,0,0])
     # robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=[1,-1,-1,1,-1,-1],phase=[0,0,0,0,0,0])
     # robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=0,step_p_sec=step_p_sec,relation=[1,1,-1,1,1,-1],phase=[0,0,0,0,0,0])
     # robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=[1,1,1,1,1,1],phase=[0,0,0,0,0,0])
     # robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=0,step_p_sec=step_p_sec,relation=[1,-1,-1,1,-1,1],phase=[0,0,0,0,0,-np.pi/2])
-    servo_grp = GroupServos(servo_index_mat=[[0,0],[0,1],[0,2]],relation=[1,1,1],phase=[0,0,0])
-    robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=0,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
-    robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
-    robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=[1,1,1],phase=[0,0,0])
-    robot_obj.grp_goto_smooth(grp=servo_grp,angular_pos=0,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
-    # servo_grp_stand = GroupServos(servo_index_mat=[[0,1],[0,2],
-    #                                                 [1,1],[1,2], 
-    #                                                 [2,1],[2,2],
-    #                                                 [3,1],[3,2]],relation=[1,0,
-    #                                                                        -1,0,
-    #                                                                        -1,0,
-    #                                                                        1,0],phase=[0,np.pi/2,
-    #                                                                                    0,0,
-    #                                                                                    0,0,
-    #                                                                                    0,np.pi/2])
-    # robot_obj.grp_goto_smooth(grp=servo_grp_stand,angular_pos=np.pi/2,step_p_sec=step_p_sec)
+    while(True):
+        # servo_grp_leg0 = GroupServos(servo_index_mat=[[0,0],[0,1],[0,2]],relation=[1,1,1],phase=[0,0,0])
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=0,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=[1,1,1],phase=[0,0,0])
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=0,step_p_sec=step_p_sec,relation=[1,-1,-1],phase=[0,0,0])
 
-    #robot_obj.disarm()
+        # servo_grp_leg3 = GroupServos(servo_index_mat=[[3,0],[3,1],[3,2]],relation=[1,1,1],phase=np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1]),phase=-np.pi/2*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,-1,-1]),phase=-np.pi/2*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=-np.pi/2*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1]),phase=-np.pi/2*np.array([1,1,1]))
+
+        # servo_grp_leg0_3 = GroupServos(servo_index_mat=[[0,0],[0,1],[0,2],[3,0],[3,1],[3,2]],relation=[1,1,1,1,1,1],phase=0*np.array([1,1,1,1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1]),phase=0*np.array([1,1,1,1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1]),phase=0*np.array([1,1,1,1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1,1,1,1,]),phase=-np.pi/2*np.array([1,1,1,1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1]),phase=-np.pi/2*np.array([1,1,1,1,1,1]))
+
+        servo_grp_leg0_3_1 = \
+              GroupServos(servo_index_mat=[[0,0],[0,1],[0,2],[3,0],[3,1],[3,2],[1,0],[1,1],[1,2]],relation=[1,1,1,1,1,1,1,1,1],phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1,1,1,1,-1,-1,-1]),phase=-np.pi/2*np.array([1,1,1,1,1,1,1,1,1]))
+        robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=-np.pi/2*np.array([1,1,1,1,1,1,1,1,1]))
+
+        # servo_grp_leg3 = \
+        #      GroupServos(servo_index_mat=[[3,0],[3,1],[3,2]],relation=[1,1,1],phase=0*np.array([1,1,1,]))
+        #  #robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # #robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=-np.pi/2+0.1,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg3 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+
+        # servo_grp_leg0 = \
+        #      GroupServos(servo_index_mat=[[0,0],[0,1],[0,2]],relation=[1,1,1],phase=0*np.array([1,1,1,]))
+        #  #robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # #robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=-np.pi/2+0.1,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+
+        # servo_grp_leg1 = \
+        #      GroupServos(servo_index_mat=[[1,0],[1,1],[1,2]],relation=[1,1,1],phase=0*np.array([1,1,1,]))
+        #  #robot_obj.grp_goto_smooth(grp=servo_grp_leg0_3_1 ,angular_pos=0,step_p_sec=step_p_sec,relation=np.array([1,-1,-1,1,-1,-1,-1,1,1]),phase=0*np.array([1,1,1,1,1,1,-1,-1,-1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg1 ,angular_pos=-np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # #robot_obj.grp_goto_smooth(grp=servo_grp_leg0 ,angular_pos=-np.pi/2+0.1,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
+        # robot_obj.grp_goto_smooth(grp=servo_grp_leg1 ,angular_pos=np.pi/2,step_p_sec=step_p_sec,relation=np.array([1,1,1]),phase=0*np.array([1,1,1]))
     

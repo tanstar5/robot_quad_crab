@@ -1,6 +1,6 @@
 import numpy as np
 class GroupServos():
-    def __init__(self,servo_index_mat:list[list[int]],relation:list,phase:list[float]):
+    def __init__(self,servo_index_mat:list[list[int]],relation:np.ndarray,phase:np.ndarray):
         self.servo_index_mat = servo_index_mat
         self.__relation = relation
         self.__phase = phase
@@ -12,9 +12,9 @@ class GroupServos():
             
         
     def return_norm_pos(self,angular_pos:float,relation=None,phase=None):
-        if relation!=None:
+        if np.any(relation):
             self.__relation = relation
-        if phase != None:
+        if np.any(phase):
             self.__phase = phase    
         #grp_servo_motors = [self.__servo_motor_list[servo_index[0]][servo_index[1]] for servo_index in self.__servo_index_mat]
         norm_pos_list = [(np.sin(angular_pos*r+p)+1)/2 for r,p in zip(self.__relation,self.__phase)]
