@@ -20,10 +20,11 @@ class RobotServer():
         #self.__robot_obj = robot
         self.__server_ip = server_ip
         self.__server_port = 2222
-        self.__buffer_size = 1024
+        self.__buffer_size = 10*1024
         self.__rpi_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.__rpi_socket.bind((server_ip,self.__server_port))
         self.__rpi_socket.setblocking(False)
+        self.__robo_params_target = RobotParams()
         self.sync()
 
     def sync(self,servo_limits:list=None,servo_pos:np.ndarray=None):
@@ -35,14 +36,18 @@ class RobotServer():
 
     def listen_from_client(self,client_address:str='192.168.0.160',servo_limits:list=None,servo_pos:np.ndarray=None):
         try:            
-            message,address = self.__rpi_socket.recvfrom(self.__buffer_size)
+            message,address = self.__rpi_socket.recvfrom(self.__buffer_size)            
         except BlockingIOError:
             #print(f'Message: No coms')
             pass
         else:
             if address[0] == client_address:
-                self.send(client_address=address,servo_limits=servo_limits,servo_pos=servo_pos)
-                print(f'Message: Packet sent to client {address}')
+                command,robo_params_from_client = self.__robo_params_target.read_data_packet(packet=message)
+                if command == 1:
+                    self.__robo_params_target.__dict__.update(robo_params_from_client.__dict__) 
+                else: 
+                    self.send(client_address=address,servo_limits=servo_limits,servo_pos=servo_pos)
+                #print(f'Message:Recieved command {command,robo_params_from_client.__dict__} Packet sent to client {address}')
             else:
                 print(f'WARNING: Unknown client trying to communicate {address[0]}')
         
@@ -51,6 +56,10 @@ class RobotServer():
         self.sync(servo_limits=servo_limits,servo_pos=servo_pos)
         packet = self.__robo_params.create_data_packet()
         self.__rpi_socket.sendto(packet,client_address)
+
+    def get_robot_params_target(self):
+        return self.__robo_params_target
+        
         
 
 class RobotClient():
@@ -72,7 +81,7 @@ class RobotClient():
         try:
            packet_recv,address = self.__client_socket.recvfrom(self.__buffer_size)           
            self.__robot_params.read_data_packet(packet=packet_recv)
-           print(f'DEBUG: got  {self.__robot_params.__dict__} from server')
+           #print(f'DEBUG: got  {self.__robot_params.__dict__} from server')
         except BlockingIOError:
            print(f'WARNING: server didnt respond {server_address} and robot_servo_pos is {self.__robot_params.servo_pos}')
 
